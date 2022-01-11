@@ -37,7 +37,8 @@ class Task(db.Model):
 
  
 
-    def __init__(self, title, content, dateCreated, startDate, dateDue, type, status, reviewed, color):
+    def __init__(self, parentId, title, content, dateCreated, startDate, dateDue, type, status, reviewed, color):
+        self.parentId = parentId
         self.title = title
         self.content = content
         self.dateCreated = dateCreated
@@ -48,11 +49,11 @@ class Task(db.Model):
         self.reviewed = reviewed
         self.color = color
 
-db.create_all()
+#db.create_all()
 
 class TaskSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'title', 'content', 'dateCreated', 'startDate', 'dateDue', 'type', 'status', 'reviewed', 'color')
+        fields = ('id', 'parentId', 'title', 'content', 'dateCreated', 'startDate', 'dateDue', 'type', 'status', 'reviewed', 'color')
 
 
 task_schema = TaskSchema()
@@ -61,6 +62,7 @@ tasks_schema = TaskSchema(many=True)
 
 @app.route('/tasks', methods=['Post'])
 def create_task():
+  parentId = request.json['parentId']
   title = request.json['title']
   content = request.json['content']
   dateCreated = request.json['dateCreated']
@@ -72,7 +74,7 @@ def create_task():
   color = request.json['color']
 
 
-  new_task= Task(title, content, dateCreated, startDate, dateDue, type, status, reviewed, color)
+  new_task= Task(parentId, title, content, dateCreated, startDate, dateDue, type, status, reviewed, color)
 
   db.session.add(new_task)
   db.session.commit()
@@ -94,6 +96,7 @@ def get_task(id):
 def update_task(id):
   task = Task.query.get(id)
 
+  parentId = request.json['parentId']
   title = request.json['title']
   content = request.json['content']
   dateCreated = request.json['dateCreated']
@@ -104,6 +107,7 @@ def update_task(id):
   reviewed = request.json['reviewed']
   color = request.json['color']
 
+  task.parentId = parentId
   task.title = title
   task.content = content
   task.dateCreated = dateCreated
