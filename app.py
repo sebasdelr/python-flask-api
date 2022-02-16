@@ -31,7 +31,7 @@ class Task(db.Model):
     startDate = db.Column(db.Date)
     dateDue = db.Column(db.Date)
     type = db.Column(db.Integer)
-    status = db.Column(db.Integer)
+    status = db.Column(db.String(70)
     reviewed = db.Column(db.Boolean)
     color = db.Column(db.String(10))
 
